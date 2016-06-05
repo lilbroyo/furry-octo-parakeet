@@ -1,0 +1,195 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <conio.h>
+
+long long cardnumber;
+int numberofdigits;
+int cardarray[16];
+int firstdigit;
+int seconddigit;
+int thirddigit;
+int fourthdigit;
+int luhnstestPass;
+int choice;
+
+
+
+int enternumber()
+{
+	printf("\nPlease enter your long number\n");
+	scanf_s("%lld", &cardnumber);
+	return 0;
+}
+
+int checknoofdigits()
+{
+	if (cardnumber > 99999999999999 && cardnumber < 1000000000000000)
+	{
+		printf("correct number of digits\n");
+		return 15;
+	}
+
+
+	if (cardnumber > 999999999999999 && cardnumber < 10000000000000000)
+	{
+
+		printf("correct number of digits\n");
+		return 16;
+	}
+
+	else
+	{
+		return 0;
+	}
+
+
+
+}
+
+int converttoarray()
+{
+	int i = 0;
+	while (cardnumber / 10 > 0)
+	{
+		cardarray[i] = cardnumber % 10;
+		cardnumber = cardnumber / 10;
+		i++;
+	}
+	cardarray[i] = cardnumber;
+	firstdigit = cardnumber;
+
+	if (numberofdigits == 15)
+	{
+		seconddigit = cardarray[13];
+		thirddigit = cardarray[12];
+		fourthdigit = cardarray[11];
+	}
+	if (numberofdigits == 16)
+	{
+		seconddigit = cardarray[14];
+		thirddigit = cardarray[13];
+		fourthdigit = cardarray[12];
+	}
+	return 0;
+}
+
+int luhnstest()
+{
+	for (int i = 0; i < numberofdigits; i++)
+	{
+		if (i % 2 != 0)
+		{
+			cardarray[i] = cardarray[i] * 2;
+			if (cardarray[i] > 9) cardarray[i] -= 9;
+
+
+		}
+	}
+	int sum = 0;
+	for (int i = 0; i < numberofdigits; i++)
+	{
+		sum = sum + cardarray[i];
+	}
+
+	if (sum % 10 == 0)
+		return 1;
+	else return 0;
+}
+
+int findtype()
+{
+	int FSdigit = (firstdigit * 10) + seconddigit;
+	if (firstdigit == 3 && seconddigit == 4 || firstdigit == 3 && seconddigit == 7)
+	{ 
+		printf("This is an American Express card\n\n");
+		return 0;
+	}
+	else if (FSdigit > 49 && FSdigit < 56)
+	{
+		printf("This is a MasterCard\n\n");
+		return 0;
+	}
+	else if (firstdigit == 4)
+	{
+		printf("This is a Visa\n\n");
+		return 0;
+	}
+	else if (firstdigit == 6 && seconddigit == 0 && thirddigit == 1 && fourthdigit == 1 || firstdigit == 6 && seconddigit == 4 && thirddigit == 4 || firstdigit == 6 && seconddigit == 5)
+	{
+		printf("This is a Discover card\n\n");
+		return 0;
+	}
+	else
+	{
+		if (firstdigit == 1)
+			printf("This is an airlines card\n\n");
+		if (firstdigit == 2)
+			printf("This is an Airlines and future industry assignments card\n\n");
+		if (firstdigit == 3)
+			printf("This is an Travel, entertainment, banking / financial card\n\n");
+		if (firstdigit == 4)
+			printf("This is an Banking and financial card\n\n");
+		if (firstdigit == 5)
+			printf("This is an Banking and financial card\n\n");
+		if (firstdigit == 6)
+			printf("This is an Merchandising and banking / financial card\n\n");
+		if (firstdigit == 7)
+			printf("This is an Petroleum and other future industry assignments card\n\n");
+		if (firstdigit == 8)
+			printf("This is an Healthcare, telecommunications, and future industry assignments card\n\n");
+		if (firstdigit == 9)
+			printf("This is an National assignment card\n\n");
+	}
+
+	return 0;
+}
+
+int main()
+{
+	do
+	{
+		printf("Main Menu\n\n");
+		printf("1. Input card number\n");
+		printf("2. Help\n");
+		printf("3. Exit\n");
+		scanf_s("%d", &choice);
+
+		switch (choice)
+		{
+		case 1:
+			enternumber();
+			numberofdigits = checknoofdigits();
+			if (numberofdigits == 16 || numberofdigits == 15)
+			{
+				converttoarray();
+				luhnstestPass = luhnstest();
+
+
+				if (luhnstestPass == 1)
+				{
+					printf("Valid card number\n\n");
+					findtype();
+				}
+				else printf("Invalid card number\n\n");
+			}
+			else printf("Please enter 15/16 digit number\n\n");
+			break;
+		case 2:
+			printf("Enter a credit card number to check if it is valid\n");
+			printf("The credit card number must be 15 or 16 digits to be valid\n");
+			printf("If a valid number is entered the type of card will be displayed\n");
+			printf("If an invalid number is entered you will be taken back to the menu\n\n");
+			break;
+		case 3: exit(EXIT_SUCCESS);
+
+		default:
+			break;
+		}
+	} while (choice != 3);
+
+	numberofdigits = 0;
+	_getch();
+	return 0;
+}
